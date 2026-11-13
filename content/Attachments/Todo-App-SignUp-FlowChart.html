@@ -1,0 +1,1078 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        font:
+          14px -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background: #fff;
+        color: #000;
+      }
+      img {
+        max-width: 100%;
+      }
+      [hidden]:not([hidden="until-found" i]) {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <title>회원가입 흐름도</title>
+    <meta name="claude:viewport-fit-sides" content="cover" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+    />
+    <style>
+      /* Layout: single reading column; wide diagrams scroll inside their own frame. */
+      :root {
+        --bg: #f6f6fa;
+        --surface: #ffffff;
+        --fg: #1d1e29;
+        --muted: #5c5f76;
+        --line: #dddde8;
+        --accent: #4f46e5;
+        --page-f: #e7eefc;
+        --page-s: #3b6fd8;
+        --client-f: #dff3ed;
+        --client-s: #1b8a72;
+        --server-f: #eee6fb;
+        --server-s: #7544c6;
+        --util-f: #fbefd9;
+        --util-s: #b27a14;
+        --ext-f: #f1f1f6;
+        --ext-s: #6b6e85;
+        --fail: #c23b2b;
+        --font-body:
+          "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
+        --font-mono:
+          "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #13141b;
+          --surface: #1b1d27;
+          --fg: #e8e9f3;
+          --muted: #9b9eb6;
+          --line: #2c2f40;
+          --accent: #8e88ff;
+          --page-f: #1b2640;
+          --page-s: #6f9bf0;
+          --client-f: #152f2a;
+          --client-s: #4fc4a9;
+          --server-f: #28203f;
+          --server-s: #ab82f2;
+          --util-f: #33280f;
+          --util-s: #e2a83f;
+          --ext-f: #222433;
+          --ext-s: #8f92aa;
+          --fail: #ff7d6d;
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #13141b;
+        --surface: #1b1d27;
+        --fg: #e8e9f3;
+        --muted: #9b9eb6;
+        --line: #2c2f40;
+        --accent: #8e88ff;
+        --page-f: #1b2640;
+        --page-s: #6f9bf0;
+        --client-f: #152f2a;
+        --client-s: #4fc4a9;
+        --server-f: #28203f;
+        --server-s: #ab82f2;
+        --util-f: #33280f;
+        --util-s: #e2a83f;
+        --ext-f: #222433;
+        --ext-s: #8f92aa;
+        --fail: #ff7d6d;
+        color-scheme: dark;
+      }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: var(--font-body);
+        font-size: 15px;
+        line-height: 1.65;
+        padding-left: max(16px, env(safe-area-inset-left, 0px));
+        padding-right: max(16px, env(safe-area-inset-right, 0px));
+        padding-block: 32px 64px;
+      }
+      main {
+        max-width: 1080px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 44px;
+      }
+      h1 {
+        font-size: 28px;
+        line-height: 1.25;
+        margin: 0 0 6px;
+        text-wrap: balance;
+      }
+      h2 {
+        font-size: 19px;
+        margin: 0 0 4px;
+        text-wrap: balance;
+      }
+      p {
+        margin: 0;
+      }
+      .lede {
+        color: var(--muted);
+      }
+      .meta {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+        margin-top: 10px;
+        overflow-wrap: anywhere;
+      }
+      section {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        min-width: 0;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      code,
+      .mono {
+        font-family: var(--font-mono);
+        font-size: 0.9em;
+      }
+      :not(pre) > code {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 1px 5px;
+      }
+
+      figure {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-width: 0;
+      }
+      .frame {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+        overflow-x: auto;
+      }
+      .frame svg {
+        display: block;
+        width: 100%;
+        min-width: 720px;
+        height: auto;
+      }
+      figcaption {
+        color: var(--muted);
+        font-size: 13.5px;
+      }
+
+      /* SVG parts */
+      svg text {
+        font-family: var(--font-body);
+        fill: var(--fg);
+      }
+      svg .t {
+        font-size: 12.5px;
+        font-weight: 700;
+      }
+      svg .s {
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        fill: var(--muted);
+      }
+      svg .lbl {
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        fill: var(--muted);
+      }
+      svg .lbl.f {
+        fill: var(--fail);
+      }
+      svg .lane {
+        fill: none;
+        stroke: var(--line);
+        stroke-width: 1;
+      }
+      svg .lane-h {
+        font-size: 12px;
+        font-weight: 700;
+        fill: var(--muted);
+        letter-spacing: 0.04em;
+      }
+      svg .row-l {
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        fill: var(--muted);
+      }
+      svg .nd {
+        stroke-width: 1.5;
+      }
+      svg .n-page {
+        fill: var(--page-f);
+        stroke: var(--page-s);
+      }
+      svg .n-client {
+        fill: var(--client-f);
+        stroke: var(--client-s);
+      }
+      svg .n-server {
+        fill: var(--server-f);
+        stroke: var(--server-s);
+      }
+      svg .n-util {
+        fill: var(--util-f);
+        stroke: var(--util-s);
+      }
+      svg .n-ext {
+        fill: var(--ext-f);
+        stroke: var(--ext-s);
+        stroke-dasharray: 5 3;
+      }
+      svg .ed {
+        fill: none;
+        stroke: var(--muted);
+        stroke-width: 1.5;
+      }
+      svg .ed.f {
+        stroke: var(--fail);
+        stroke-dasharray: 5 4;
+      }
+      svg .ed.d {
+        stroke-dasharray: 3 4;
+      }
+      svg .ah {
+        fill: var(--muted);
+      }
+      svg .ahf {
+        fill: var(--fail);
+      }
+      svg .badge {
+        fill: var(--fg);
+      }
+      svg .badge-t {
+        fill: var(--bg);
+        font-family: var(--font-mono);
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .sw {
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        border: 1.5px solid;
+        display: inline-block;
+      }
+      .sw.page {
+        background: var(--page-f);
+        border-color: var(--page-s);
+      }
+      .sw.client {
+        background: var(--client-f);
+        border-color: var(--client-s);
+      }
+      .sw.server {
+        background: var(--server-f);
+        border-color: var(--server-s);
+      }
+      .sw.util {
+        background: var(--util-f);
+        border-color: var(--util-s);
+      }
+      .sw.ext {
+        background: var(--ext-f);
+        border-color: var(--ext-s);
+        border-style: dashed;
+      }
+
+      /* Folder tree */
+      .tree {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px 0;
+        overflow-x: auto;
+      }
+      .row {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        padding: 3px 16px 3px calc(16px + var(--d, 0) * 22px);
+        min-width: 560px;
+      }
+      .row .nm {
+        font-family: var(--font-mono);
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      .row .nm.dir {
+        font-weight: 500;
+      }
+      .row .ds {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .chip {
+        font-size: 11px;
+        padding: 0 7px;
+        border-radius: 99px;
+        border: 1px solid;
+        white-space: nowrap;
+        line-height: 1.6;
+      }
+      .chip.page {
+        background: var(--page-f);
+        border-color: var(--page-s);
+      }
+      .chip.client {
+        background: var(--client-f);
+        border-color: var(--client-s);
+      }
+      .chip.server {
+        background: var(--server-f);
+        border-color: var(--server-s);
+      }
+      .chip.util {
+        background: var(--util-f);
+        border-color: var(--util-s);
+      }
+      .chip.ext {
+        background: var(--ext-f);
+        border-color: var(--ext-s);
+      }
+
+      /* Tables */
+      .tbl {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        min-width: 620px;
+        font-size: 14px;
+      }
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--line);
+      }
+      th {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 500;
+        letter-spacing: 0.04em;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      td:first-child {
+        font-weight: 500;
+      }
+
+      .two {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 14px;
+      }
+      .box {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+      }
+      .box h3 {
+        margin: 0;
+        font-size: 14px;
+      }
+      .box ul {
+        margin: 0;
+        padding-left: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 14px;
+      }
+      .del {
+        text-decoration: line-through;
+        color: var(--muted);
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+        overflow-wrap: anywhere;
+      }
+      .box ul.plain {
+        list-style: none;
+        padding: 0;
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        html {
+          scroll-behavior: smooth;
+        }
+      }
+    </style>
+
+    <main>
+      <header>
+        <h1>회원가입 흐름도</h1>
+        <p class="lede">
+          07_nextjs_assignment-main 의 가입 요청이 어느 파일을 거쳐 Supabase
+          까지 가는지, 그리고 파일끼리 어떻게 import 하는지 정리했습니다.
+        </p>
+        <p class="meta">
+          2026-10-19 · Next.js App Router · Supabase Auth · useActionState
+        </p>
+      </header>
+
+      <section aria-labelledby="h-flow">
+        <div>
+          <h2 id="h-flow">가입 버튼을 누르면 일어나는 일</h2>
+          <p class="sub">
+            브라우저, Next.js 서버, Supabase 세 곳을 오갑니다. 번호는 실행
+            순서입니다.
+          </p>
+        </div>
+        <figure>
+          <div class="frame">
+            <svg
+              viewBox="0 0 780 480"
+              role="img"
+              aria-label="회원가입 요청 흐름: 폼 제출, 서버 액션, 유효성 검사, Supabase 계정 생성, 프로필 저장, 결과 반환 순서. 검증 실패와 가입 실패는 점선 경로로 상태에 반환된다."
+            >
+              <defs>
+                <marker
+                  id="arrow"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="8"
+                  markerHeight="8"
+                  orient="auto"
+                >
+                  <path class="ah" d="M0,0 L10,5 L0,10 z" />
+                </marker>
+                <marker
+                  id="arrow-f"
+                  viewBox="0 0 10 10"
+                  refX="9"
+                  refY="5"
+                  markerWidth="8"
+                  markerHeight="8"
+                  orient="auto"
+                >
+                  <path class="ahf" d="M0,0 L10,5 L0,10 z" />
+                </marker>
+              </defs>
+
+              <rect
+                class="lane"
+                x="10"
+                y="44"
+                width="250"
+                height="436"
+                rx="8"
+              />
+              <rect
+                class="lane"
+                x="270"
+                y="44"
+                width="250"
+                height="436"
+                rx="8"
+              />
+              <rect
+                class="lane"
+                x="530"
+                y="44"
+                width="240"
+                height="436"
+                rx="8"
+              />
+              <text class="lane-h" x="135" y="32" text-anchor="middle">
+                브라우저
+              </text>
+              <text class="lane-h" x="395" y="32" text-anchor="middle">
+                Next.js 서버
+              </text>
+              <text class="lane-h" x="650" y="32" text-anchor="middle">
+                Supabase
+              </text>
+
+              <!-- nodes -->
+              <rect
+                class="nd n-client"
+                x="30"
+                y="64"
+                width="210"
+                height="46"
+                rx="6"
+              />
+              <text class="t" x="46" y="84">SignUpForm</text>
+              <text class="s" x="46" y="100">submit · isPending = true</text>
+
+              <rect
+                class="nd n-server"
+                x="290"
+                y="64"
+                width="210"
+                height="46"
+                rx="6"
+              />
+              <text class="t" x="306" y="84">signUpAction</text>
+              <text class="s" x="306" y="100">formData.get() × 4</text>
+
+              <rect
+                class="nd n-server"
+                x="290"
+                y="148"
+                width="210"
+                height="46"
+                rx="6"
+              />
+              <text class="t" x="306" y="168">validateSignUpInput</text>
+              <text class="s" x="306" y="184">name · email · pw · confirm</text>
+
+              <rect
+                class="nd n-client"
+                x="30"
+                y="148"
+                width="210"
+                height="46"
+                rx="6"
+              />
+              <text class="t" x="46" y="168">state.errors 표시</text>
+              <text class="s" x="46" y="184">필드 아래 붉은 문구</text>
+
+              <rect
+                class="nd n-server"
+                x="290"
+                y="240"
+                width="210"
+                height="46"
+                rx="6"
+              />
+              <text class="t" x="306" y="260">createServerClient()</text>
+              <text class="s" x="306" y="276">cookies() 연결</text>
+
+              <rect
+                class="nd n-ext"
+                x="550"
+                y="240"
+                width="210"
+                height="46"
+                rx="6"
+              />
+              <text class="t" x="566" y="260">auth.signUp()</text>
+              <text class="s" x="566" y="276">auth.users 에 계정 생성</text>
+
+              <rect
+                class="nd n-ext"
+                x="550"
+                y="332"
+                width="210"
+                height="46"
+                rx="6"
+              />
+              <text class="t" x="566" y="352">profiles.insert()</text>
+              <text class="s" x="566" y="368">{ id: user.id, name }</text>
+
+              <rect
+                class="nd n-server"
+                x="290"
+                y="410"
+                width="210"
+                height="46"
+                rx="6"
+              />
+              <text class="t" x="306" y="430">ActionState 반환</text>
+              <text class="s" x="306" y="446">{ success, message }</text>
+
+              <rect
+                class="nd n-client"
+                x="30"
+                y="410"
+                width="210"
+                height="46"
+                rx="6"
+              />
+              <text class="t" x="46" y="430">state 갱신</text>
+              <text class="s" x="46" y="446">isPending = false · 메시지</text>
+
+              <!-- edges -->
+              <path class="ed" d="M240,87 H288" marker-end="url(#arrow)" />
+              <text class="lbl" x="264" y="79" text-anchor="middle">
+                action
+              </text>
+              <path class="ed" d="M395,110 V146" marker-end="url(#arrow)" />
+              <path class="ed f" d="M290,171 H242" marker-end="url(#arrow-f)" />
+              <text class="lbl f" x="266" y="163" text-anchor="middle">
+                실패
+              </text>
+              <path class="ed" d="M395,194 V238" marker-end="url(#arrow)" />
+              <text class="lbl" x="404" y="220">통과</text>
+              <path class="ed" d="M500,263 H548" marker-end="url(#arrow)" />
+              <path class="ed" d="M655,286 V330" marker-end="url(#arrow)" />
+              <text class="lbl" x="664" y="313">user.id</text>
+              <path
+                class="ed f"
+                d="M550,277 H525 V424 H502"
+                marker-end="url(#arrow-f)"
+              />
+              <text class="lbl f" x="520" y="352" text-anchor="end">
+                가입 실패
+              </text>
+              <path
+                class="ed"
+                d="M655,378 V443 H502"
+                marker-end="url(#arrow)"
+              />
+              <text class="lbl" x="580" y="435" text-anchor="middle">
+                성공 · 프로필 실패
+              </text>
+              <path class="ed" d="M290,433 H242" marker-end="url(#arrow)" />
+              <text class="lbl" x="266" y="425" text-anchor="middle">
+                state
+              </text>
+
+              <!-- step badges -->
+              <g>
+                <circle class="badge" cx="30" cy="64" r="9" />
+                <text class="badge-t" x="30" y="67.5" text-anchor="middle">
+                  1
+                </text>
+              </g>
+              <g>
+                <circle class="badge" cx="290" cy="64" r="9" />
+                <text class="badge-t" x="290" y="67.5" text-anchor="middle">
+                  2
+                </text>
+              </g>
+              <g>
+                <circle class="badge" cx="290" cy="148" r="9" />
+                <text class="badge-t" x="290" y="151.5" text-anchor="middle">
+                  3
+                </text>
+              </g>
+              <g>
+                <circle class="badge" cx="30" cy="148" r="9" />
+                <text class="badge-t" x="30" y="151.5" text-anchor="middle">
+                  4
+                </text>
+              </g>
+              <g>
+                <circle class="badge" cx="290" cy="240" r="9" />
+                <text class="badge-t" x="290" y="243.5" text-anchor="middle">
+                  5
+                </text>
+              </g>
+              <g>
+                <circle class="badge" cx="550" cy="240" r="9" />
+                <text class="badge-t" x="550" y="243.5" text-anchor="middle">
+                  6
+                </text>
+              </g>
+              <g>
+                <circle class="badge" cx="550" cy="332" r="9" />
+                <text class="badge-t" x="550" y="335.5" text-anchor="middle">
+                  7
+                </text>
+              </g>
+              <g>
+                <circle class="badge" cx="290" cy="410" r="9" />
+                <text class="badge-t" x="290" y="413.5" text-anchor="middle">
+                  8
+                </text>
+              </g>
+              <g>
+                <circle class="badge" cx="30" cy="410" r="9" />
+                <text class="badge-t" x="30" y="413.5" text-anchor="middle">
+                  9
+                </text>
+              </g>
+            </svg>
+          </div>
+          <figcaption>
+            검증 실패(4)는 Supabase 를 부르기 전에 끝납니다. 가입 실패와 프로필
+            저장 실패는 둘 다 메시지만 담아 8번으로 돌아오고, 9번에서 화면에
+            반영됩니다. 이 모든 결과가 서버 액션의 반환값
+            하나(<code>ActionState</code>)로 전달됩니다.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section aria-labelledby="h-deps">
+        <div>
+          <h2 id="h-deps">파일은 어떻게 이어지나</h2>
+          <p class="sub">
+            화살표는 “import 한다”는 뜻입니다. 위에서 아래로만 흐르고 거꾸로
+            가는 화살표는 없습니다.
+          </p>
+        </div>
+        <figure>
+          <div class="frame">
+            <svg
+              viewBox="0 0 880 480"
+              role="img"
+              aria-label="파일 import 관계: 페이지가 폼 컴포넌트를, SignUpForm이 서버 액션과 action.types를, 서버 액션이 authValidation, supabase.ts, action.types를 import한다. supabase.ts는 외부 Supabase로 연결된다."
+            >
+              <text class="row-l" x="8" y="54">app/(todo)</text>
+              <text class="row-l" x="8" y="154">components</text>
+              <text class="row-l" x="8" y="254">actions</text>
+              <text class="row-l" x="8" y="354">utils · lib · types</text>
+              <text class="row-l" x="8" y="444">types · 외부</text>
+              <path
+                class="lane"
+                d="M8,100 H872 M8,200 H872 M8,300 H872 M8,400 H872"
+                style="stroke-dasharray: 2 4"
+              />
+
+              <!-- row 1: pages -->
+              <rect
+                class="nd n-page"
+                x="170"
+                y="30"
+                width="150"
+                height="40"
+                rx="6"
+              />
+              <text class="t" x="182" y="48">layout.tsx</text>
+              <text class="s" x="182" y="62">(todo)</text>
+              <rect
+                class="nd n-page"
+                x="340"
+                y="30"
+                width="150"
+                height="40"
+                rx="6"
+              />
+              <text class="t" x="352" y="48">page.tsx</text>
+              <text class="s" x="352" y="62">/sign_in</text>
+              <rect
+                class="nd n-page"
+                x="510"
+                y="30"
+                width="150"
+                height="40"
+                rx="6"
+              />
+              <text class="t" x="522" y="48">page.tsx</text>
+              <text class="s" x="522" y="62">/sign_up</text>
+
+              <!-- row 2: components -->
+              <rect
+                class="nd n-page"
+                x="170"
+                y="130"
+                width="150"
+                height="40"
+                rx="6"
+              />
+              <text class="t" x="182" y="148">Header.tsx</text>
+              <text class="s" x="182" y="162">shared/components</text>
+              <rect
+                class="nd n-page"
+                x="340"
+                y="130"
+                width="150"
+                height="40"
+                rx="6"
+              />
+              <text class="t" x="352" y="148">SignInForm.tsx</text>
+              <text class="s" x="352" y="162">서버 컴포넌트</text>
+              <rect
+                class="nd n-client"
+                x="510"
+                y="130"
+                width="150"
+                height="40"
+                rx="6"
+              />
+              <text class="t" x="522" y="148">SignUpForm.tsx</text>
+              <text class="s" x="522" y="162">'use client'</text>
+
+              <!-- row 3: action -->
+              <rect
+                class="nd n-server"
+                x="510"
+                y="230"
+                width="150"
+                height="40"
+                rx="6"
+              />
+              <text class="t" x="522" y="248">signup.actions.ts</text>
+              <text class="s" x="522" y="262">'use server' · async</text>
+
+              <!-- row 4 -->
+              <rect
+                class="nd n-util"
+                x="340"
+                y="330"
+                width="150"
+                height="40"
+                rx="6"
+              />
+              <text class="t" x="352" y="348">authValidation.ts</text>
+              <text class="s" x="352" y="362">검증 함수</text>
+              <rect
+                class="nd n-util"
+                x="510"
+                y="330"
+                width="150"
+                height="40"
+                rx="6"
+              />
+              <text class="t" x="522" y="348">supabase.ts</text>
+              <text class="s" x="522" y="362">클라이언트 생성</text>
+              <rect
+                class="nd n-util"
+                x="680"
+                y="330"
+                width="150"
+                height="40"
+                rx="6"
+              />
+              <text class="t" x="692" y="348">action.types.ts</text>
+              <text class="s" x="692" y="362">ActionState</text>
+
+              <!-- row 5 -->
+              <rect
+                class="nd n-util"
+                x="340"
+                y="420"
+                width="150"
+                height="40"
+                rx="6"
+              />
+              <text class="t" x="352" y="438">auth.types.ts</text>
+              <text class="s" x="352" y="452">SignUpInput</text>
+              <rect
+                class="nd n-ext"
+                x="510"
+                y="420"
+                width="150"
+                height="40"
+                rx="6"
+              />
+              <text class="t" x="522" y="438">Supabase</text>
+              <text class="s" x="522" y="452">auth · profiles</text>
+
+              <!-- edges -->
+              <path class="ed" d="M245,70 V128" marker-end="url(#arrow)" />
+              <path class="ed" d="M415,70 V128" marker-end="url(#arrow)" />
+              <path class="ed" d="M585,70 V128" marker-end="url(#arrow)" />
+              <path class="ed" d="M585,170 V228" marker-end="url(#arrow)" />
+              <path
+                class="ed"
+                d="M660,150 H780 V328"
+                marker-end="url(#arrow)"
+              />
+              <text class="lbl" x="722" y="143" text-anchor="middle">
+                INITIAL_ACTION_STATE
+              </text>
+              <path
+                class="ed"
+                d="M660,250 H730 V328"
+                marker-end="url(#arrow)"
+              />
+              <path
+                class="ed"
+                d="M510,250 H415 V328"
+                marker-end="url(#arrow)"
+              />
+              <path class="ed" d="M585,270 V328" marker-end="url(#arrow)" />
+              <path class="ed" d="M415,370 V418" marker-end="url(#arrow)" />
+              <path class="ed d" d="M585,370 V418" marker-end="url(#arrow)" />
+              <text class="lbl" x="594" y="398">HTTPS</text>
+            </svg>
+          </div>
+          <figcaption>
+            SignUpForm 이 서버 액션을 import 하는 순간 Next.js 가 둘 사이를
+            네트워크 호출로 바꿔 줍니다. 그래서 <code>supabase.ts</code>,
+            <code>authValidation.ts</code> 같은 서버 쪽 코드는 브라우저 번들로
+            들어가지 않습니다. SignInForm 은 아직 서버 액션과 이어지지
+            않았습니다.
+          </figcaption>
+          <div class="legend" aria-label="색상 범례">
+            <span><i class="sw page"></i>페이지 · 서버 컴포넌트</span>
+            <span><i class="sw client"></i>클라이언트 컴포넌트</span>
+            <span><i class="sw server"></i>서버 액션 · 서버 코드</span>
+            <span><i class="sw util"></i>유틸 · 라이브러리 · 타입</span>
+            <span><i class="sw ext"></i>외부 서비스</span>
+          </div>
+        </figure>
+      </section>
+
+      <section aria-labelledby="h-tree">
+        <div>
+          <h2 id="h-tree">폴더 구조</h2>
+          <p class="sub">
+            기능 단위는 <code>domains/</code>, 여러 곳에서 쓰는 것은
+            <code>shared/</code>, URL 은 <code>app/</code> 이 맡습니다.
+          </p>
+        </div>
+        <div class="tree" role="list">
+          <div class="row" style="--d: 0" role="listitem">
+            <span class="nm dir">app/</span
+            ><span class="ds">URL 과 1:1 로 대응하는 라우트</span>
+          </div>
+          <div class="row" style="--d: 1" role="listitem">
+            <span class="nm">layout.tsx</span><span class="chip page">서버</span
+            ><span class="ds">루트 레이아웃, 폰트</span>
+          </div>
+          <div class="row" style="--d: 1" role="listitem">
+            <span class="nm dir">(todo)/</span
+            ><span class="ds">라우트 그룹. 괄호 이름은 주소에 나오지 않음</span>
+          </div>
+          <div class="row" style="--d: 2" role="listitem">
+            <span class="nm">layout.tsx</span><span class="chip page">서버</span
+            ><span class="ds">Header + main 틀</span>
+          </div>
+          <div class="row" style="--d: 2" role="listitem">
+            <span class="nm">page.tsx</span><span class="chip page">서버</span
+            ><span class="ds">“/” (아직 비어 있음)</span>
+          </div>
+          <div class="row" style="--d: 2" role="listitem">
+            <span class="nm">sign_in/page.tsx</span
+            ><span class="chip page">서버</span
+            ><span class="ds">“/sign_in”</span>
+          </div>
+          <div class="row" style="--d: 2" role="listitem">
+            <span class="nm">sign_up/page.tsx</span
+            ><span class="chip page">서버</span
+            ><span class="ds">“/sign_up”</span>
+          </div>
+
+          <div class="row" style="--d: 0" role="listitem">
+            <span class="nm dir">domains/auth/</span
+            ><span class="ds">인증 기능 한 덩어리</span>
+          </div>
+          <div class="row" style="--d: 1" role="listitem">
+            <span class="nm">actions/signup.actions.ts</span
+            ><span class="chip server">서버 액션</span
+            ><span class="ds">검증 → 가입 → 프로필 저장</span>
+          </div>
+          <div class="row" style="--d: 1" role="listitem">
+            <span class="nm">components/SignUpForm.tsx</span
+            ><span class="chip client">클라이언트</span
+            ><span class="ds">useActionState, isPending</span>
+          </div>
+          <div class="row" style="--d: 1" role="listitem">
+            <span class="nm">components/SignInForm.tsx</span
+            ><span class="chip page">서버</span
+            ><span class="ds">입력창만 있음</span>
+          </div>
+          <div class="row" style="--d: 1" role="listitem">
+            <span class="nm">utils/authValidation.ts</span
+            ><span class="chip util">유틸</span
+            ><span class="ds">로그인·가입 입력 검증</span>
+          </div>
+          <div class="row" style="--d: 1" role="listitem">
+            <span class="nm">types/auth.types.ts</span
+            ><span class="chip util">타입</span
+            ><span class="ds">SignInInput, SignUpInput</span>
+          </div>
+
+          <div class="row" style="--d: 0" role="listitem">
+            <span class="nm dir">shared/</span
+            ><span class="ds">기능과 상관없이 같이 쓰는 것</span>
+          </div>
+          <div class="row" style="--d: 1" role="listitem">
+            <span class="nm">components/Header.tsx</span
+            ><span class="chip page">서버</span
+            ><span class="ds">로그인·회원가입 링크</span>
+          </div>
+          <div class="row" style="--d: 1" role="listitem">
+            <span class="nm">components/ui/</span
+            ><span class="chip util">UI</span
+            ><span class="ds">button · input · dialog</span>
+          </div>
+          <div class="row" style="--d: 1" role="listitem">
+            <span class="nm">lib/supabase.ts</span
+            ><span class="chip util">라이브러리</span
+            ><span class="ds">브라우저용·서버용 클라이언트</span>
+          </div>
+          <div class="row" style="--d: 1" role="listitem">
+            <span class="nm">types/action.types.ts</span
+            ><span class="chip util">타입</span
+            ><span class="ds">ActionState, 초기값</span>
+          </div>
+
+          <div class="row" style="--d: 0" role="listitem">
+            <span class="nm">.env.local</span
+            ><span class="chip ext">git 제외</span
+            ><span class="ds">Supabase URL · publishable key</span>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-todo">
+        <div>
+          <h2 id="h-todo">아직 이어지지 않은 곳</h2>
+        </div>
+        <div class="box">
+          <ul>
+            <li>
+              <code>SignInForm</code> 에 서버 액션이 없어서 로그인 버튼이 아무
+              일도 하지 않습니다.
+            </li>
+            <li><code>(todo)/page.tsx</code> 는 빈 화면입니다.</li>
+            <li>
+              루트 <code>layout.tsx</code> 의 title 이 아직 “Create Next App”
+              입니다.
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

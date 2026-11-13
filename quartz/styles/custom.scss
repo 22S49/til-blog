@@ -24,7 +24,84 @@
     url("https://cdn.jsdelivr.net/gh/joungkyun/font-d2coding/D2CodingBold.woff") format("woff");
 }
 
+// Pretendard 가변 폰트(굵기 45~920 하나로 처리, 파일 약 2MB)
+@font-face {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 45 920;
+  font-display: swap;
+  src:
+    local("Pretendard Variable"),
+    url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2")
+      format("woff2-variations");
+}
+
 // 홈 화면은 제목 없이 비워 둔다 (탭 제목은 frontmatter의 title 사용)
 body[data-slug="index"] .article-title {
   display: none;
+}
+
+// 데스크톱: 제목+접기/펼치기 버튼을 통째로 숨겨 목록이 항상 펼쳐져 있게 한다
+.explorer button.desktop-explorer {
+  display: none !important;
+}
+
+// 창이 낮아도 탐색기 목록이 찌그러져 스크롤바 화살표만 남지 않게 최소 높이를 둔다
+@media (min-width: 801px) {
+  .explorer {
+    min-height: 10rem;
+  }
+}
+
+// 폴더 페이지: "N건의 항목"은 남기고 글 목록만 숨긴다
+.page-listing > div {
+  display: none;
+}
+
+// 경로(breadcrumb)와 제목 사이를 제목-본문 간격(1rem)과 같게 맞춘다
+.article-title {
+  margin-top: 1rem;
+}
+
+// 오른쪽 영역을 쓰지 않는다: 오른쪽 사이드바를 숨기고 데스크톱 격자를 2열로 줄인다
+.page > #quartz-body .sidebar.right {
+  display: none;
+}
+@media all and ($desktop) {
+  .page > #quartz-body {
+    grid-template-columns: $sidePanelWidth auto;
+    grid-template-areas:
+      "grid-sidebar-left grid-header"
+      "grid-sidebar-left grid-center"
+      "grid-sidebar-left grid-footer";
+  }
+}
+
+// 숫자만 고정폭(tabular-nums): 날짜 등 숫자 자릿수가 같은 폭으로 보인다
+body {
+  font-variant-numeric: tabular-nums;
+}
+
+// 페이지 제목 아래 실선: 본문 끝의 hr과 같은 색, 같은 굵기(hr은 높이 1px + 위 테두리 2px = 3px로 그려짐)
+.article-title {
+  padding-bottom: 1rem;
+  border-bottom: 3px solid var(--lightgray);
+}
+
+// 강조색(링크, 경로 등)을 초록으로. 테마 플러그인이 :root:root 로 보라색을 지정하므로 한 단계 더 구체적으로 덮어쓴다.
+:root:root:root {
+  --accent-h: 152;
+  --accent-s: 45%;
+  --accent-l: 32%;
+}
+:root:root:root[saved-theme="dark"] {
+  --accent-h: 150;
+  --accent-s: 45%;
+  --accent-l: 62%;
+}
+
+// 본문 목록 들여쓰기를 절반으로(기본 40px -> 20px)
+article ul,
+article ol {
+  padding-left: 20px;
 }

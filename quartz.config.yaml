@@ -16,8 +16,8 @@ configuration:
     fontOrigin: local
     cdnCaching: true
     typography:
-      header: D2Coding
-      body: D2Coding
+      header: Pretendard
+      body: Pretendard
       code: D2Coding
     colors:
       lightMode:
@@ -26,7 +26,7 @@ configuration:
         gray: "#b8b8b8"
         darkgray: "#4e4e4e"
         dark: "#2b2b2b"
-        secondary: "#284b63"
+        secondary: "#2d7654"
         tertiary: "#84a59d"
         highlight: rgba(143, 159, 169, 0.15)
         textHighlight: "#fff23688"
@@ -36,7 +36,7 @@ configuration:
         gray: "#646464"
         darkgray: "#d4d4d4"
         dark: "#ebebec"
-        secondary: "#7b97aa"
+        secondary: "#72ca9e"
         tertiary: "#84a59d"
         highlight: rgba(143, 159, 169, 0.15)
         textHighlight: "#b3aa0288"
@@ -44,7 +44,7 @@ plugins:
   - source: "@quartz-community/created-modified-date"
     enabled: true
     options:
-      defaultDateType: modified
+      defaultDateType: created
       priority:
         - frontmatter
         - git
@@ -78,7 +78,7 @@ plugins:
     enabled: true
     order: 40
   - source: "@quartz-community/table-of-contents"
-    enabled: true
+    enabled: false
     order: 50
     layout:
       position: right
@@ -110,6 +110,12 @@ plugins:
     order: 92
   - source: "@quartz-community/quartz-fonts"
     enabled: true
+    options:
+      fontOrigin: local
+      body: '"Pretendard", sans-serif'
+      header: '"Pretendard", sans-serif'
+      code: '"D2Coding", monospace'
+      interface: '"Pretendard", sans-serif'
   - source: "@quartz-themes/core"
     enabled: true
     options:
@@ -124,7 +130,7 @@ plugins:
     options: {}
     order: 45
   - source: "@quartz-community/encrypted-pages"
-    enabled: true
+    enabled: false
     options:
       iterations: 600000
       passwordField: password
@@ -146,11 +152,11 @@ plugins:
   - source: "@quartz-community/favicon"
     enabled: true
   - source: "@quartz-community/og-image"
-    enabled: true
+    enabled: false
   - source: "@quartz-community/cname"
     enabled: true
   - source: "@quartz-community/canvas-page"
-    enabled: true
+    enabled: false
   - source: "@quartz-community/content-page"
     enabled: true
   - source: "@quartz-community/folder-page"
@@ -160,7 +166,8 @@ plugins:
   - source: "@quartz-community/explorer"
     enabled: true
     options:
-      title: 탐색기
+      title: 둘러보기
+      useSavedState: false
     layout:
       position: left
       priority: 50
@@ -178,7 +185,7 @@ plugins:
       groupOptions:
         grow: true
   - source: "@quartz-community/backlinks"
-    enabled: true
+    enabled: false
     layout:
       position: right
       priority: 50
@@ -246,7 +253,7 @@ plugins:
       priority: 25
       display: mobile-only
   - source: "@quartz-community/bases-page"
-    enabled: true
+    enabled: false
     options: {}
     order: 50
   - source: "@quartz-community/note-properties"
@@ -267,7 +274,7 @@ plugins:
       priority: 15
       display: all
   - source: "@quartz-community/obsidian-plugin-excalidraw"
-    enabled: true
+    enabled: false
     options:
       enableInteraction: true
       darkMode: auto
